@@ -1,0 +1,16 @@
+PODS:
+  - sdk (1.0)
+
+DEPENDENCIES:
+  - sdk (from `../sdk`)
+
+EXTERNAL SOURCES:
+  sdk:
+    :path: "../sdk"
+
+SPEC CHECKSUMS:
+  sdk: dd64302d6e7793f8970036f18140ff2ab678bef4
+
+PODFILE CHECKSUM: 713873ea93fffb16e69b4eb811dd8be96377cd03
+
+COCOAPODS: 1.10.1

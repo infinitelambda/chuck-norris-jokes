@@ -1,0 +1,25 @@
+/* 
+  File.strings
+  iosApp
+
+  Created by Danail Alexiev on 21.03.22.
+  Copyright © 2022 orgName. All rights reserved.
+*/
+"joke_category_any" = "Any";
+"joke_category_animal" = "Animal";
+"joke_category_career" = "Career";
+"joke_category_celebrity" = "Celebrity";
+"joke_category_dev" = "Development";
+"joke_category_explicit" = "Explicit";
+"joke_category_fashion" = "Fashion";
+"joke_category_food" = "Food";
+"joke_category_history" = "History";
+"joke_category_money" = "Money";
+"joke_category_movie" = "Movie";
+"joke_category_music" = "Music";
+"joke_category_political" = "Political";
+"joke_category_religion" = "Religion";
+"joke_category_science" = "Science";
+"joke_category_sport" = "Sport";
+"joke_category_travel" = "Travel";
+"joke_category_unknown" = "Unknown";

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Chuck Norris Jokes</string>
+
+    <string name="joke_category_dropdown_label">Category</string>
+
+    <string name="joke_category_any">Any</string>
+    <string name="joke_category_animal">Animal</string>
+    <string name="joke_category_career">Career</string>
+    <string name="joke_category_celebrity">Celebrity</string>
+    <string name="joke_category_dev">Development</string>
+    <string name="joke_category_explicit">Explicit</string>
+    <string name="joke_category_fashion">Fashion</string>
+    <string name="joke_category_food">Food</string>
+    <string name="joke_category_history">History</string>
+    <string name="joke_category_money">Money</string>
+    <string name="joke_category_movie">Movie</string>
+    <string name="joke_category_music">Music</string>
+    <string name="joke_category_political">Political</string>
+    <string name="joke_category_religion">Religion</string>
+    <string name="joke_category_science">Science</string>
+    <string name="joke_category_sport">Sport</string>
+    <string name="joke_category_travel">Travel</string>
+    <string name="joke_category_unknown">Unknown</string>
+
+    <string name="joke_refresh_button_content_description">Load new joke button</string>
+
+    <string name="joke_share_button_content_description">Share joke button</string>
+
+    <string name="joke_share_sheet_title">Share joke</string>
+</resources>

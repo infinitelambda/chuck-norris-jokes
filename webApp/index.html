@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chuck Norris Multiplatform SDK Demo</title>
+        <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+
+        <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+        
+        <script type="text/javascript" src="../sdk/build/distributions/sdk.js"></script>
+
+        <style>
+            .category-select-width {
+                width: 100%;
+            }   
+
+            .joke-card-content {
+                padding: 16px;
+            }
+
+            .center {
+                margin: auto;
+            }
+
+            .page {
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body class="mdc-typography">
+        <header class="mdc-top-app-bar">
+            <div class="mdc-top-app-bar__row">
+              <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+                <span class="mdc-top-app-bar__title">Chuck Norris SDK Demo</span>
+              </section>
+              <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
+                <button id="refreshButton" class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Refresh">refresh</button>
+              </section>
+            </div>
+          </header>
+          <main class="mdc-top-app-bar--fixed-adjust page">
+            <div class="mdc-layout-grid">
+                <div class="mdc-layout-grid__inner">
+                    <div class="mdc-layout-grid__cell--span-3"></div>
+                    <div class="mdc-layout-grid__cell--span-6">
+                        <div class="mdc-select mdc-select--filled category-select-width">
+                            <div class="mdc-select__anchor"
+                                 role="button"
+                                 aria-haspopup="listbox"
+                                 aria-expanded="false"
+                                 aria-labelledby="demo-label demo-selected-text">
+                              <span class="mdc-select__ripple"></span>
+                              <span id="demo-label" class="mdc-floating-label">Pick a joke category</span>
+                              <span class="mdc-select__selected-text-container">
+                                <span id="demo-selected-text" class="mdc-select__selected-text">Any</span>
+                              </span>
+                              <span class="mdc-select__dropdown-icon">
+                                <svg
+                                    class="mdc-select__dropdown-icon-graphic"
+                                    viewBox="7 10 10 5" focusable="false">
+                                  <polygon
+                                      class="mdc-select__dropdown-icon-inactive"
+                                      stroke="none"
+                                      fill-rule="evenodd"
+                                      points="7 10 12 15 17 10">
+                                  </polygon>
+                                  <polygon
+                                      class="mdc-select__dropdown-icon-active"
+                                      stroke="none"
+                                      fill-rule="evenodd"
+                                      points="7 15 12 10 17 15">
+                                  </polygon>
+                                </svg>
+                              </span>
+                              <span class="mdc-line-ripple"></span>
+                            </div>
+                          
+                            <div class="mdc-select__menu mdc-menu mdc-menu-surface mdc-menu-surface--fullwidth">
+                              <ul class="mdc-list" role="listbox" aria-label="Joke category picker listbox">
+                                <li class="mdc-list-item mdc-list-item--selected" aria-selected="true" data-value="" role="option">
+                                  <span class="mdc-list-item__ripple"></span>
+                                  <span class="mdc-list-item__text">Any</span>
+                                </li>
+                                <template>
+                                    <li class="mdc-list-item" aria-selected="false" role="option">
+                                        <span class="mdc-list-item__ripple"></span>
+                                        <span class="mdc-list-item__text"></span>
+                                    </li>
+                                </template>
+                              </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mdc-layout-grid__cell--span-3"></div>
+                    <div class="mdc-layout-grid__cell--span-3"></div>
+                    <div class="mdc-layout-grid__cell--span-6 center">
+                        <div class="mdc-card center">
+                            <div class="mdc-card__media center">
+                                <img id="jokeImage" alt="Joke Image">
+                            </div>
+                            <div class="mdc-card__content joke-card-content">
+                                <span id="jokeValue" class="mdc-typography--body1">Loading...</span>
+    
+                                <span id="jokeCategories" class="mdc-chip-set" role="grid">
+                                    <span class="mdc-chip-set__chips" role="presentation">
+                                        <template>
+                                            <span class="mdc-chip" role="row">
+                                                <span class="mdc-chip__cell mdc-chip__cell--primary" role="gridcell">
+                                                    <a class="mdc-chip__action mdc-chip__action-primary mdc-chip__action--presentational">
+                                                        <span class="mdc-chip__ripple mdc-chip__ripple--primary"></span>
+                                                        <span class="mdc-chip__text-label">Chip label</span>
+                                                    </a>
+                                                </span>
+                                            </span>
+                                        </template>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mdc-layout-grid__cell--span-3"></div>
+                </div>
+                
+            </div>    
+          </main>
+    </body>
+
+    <script type="text/javascript">
+        const sdk = window["sdk"];
+        const jokeClient = new sdk.com.infinitelambda.chuck.JokeClient({
+            isLoggingEnabled: false,
+            requestTimeout: 10000,
+            connectTimeout: 10000
+        });
+
+        const categorySelect = new mdc.select.MDCSelect(document.querySelector('.mdc-select'))
+        categorySelect.listen('MDCSelect:change', () => {
+            updateJoke()
+        })
+
+        const refreshButton = document.querySelector("#refreshButton")
+        refreshButton.addEventListener('click', () => {
+            updateJoke()
+        })
+
+        function updateJoke() {
+            const selectedCategory = categorySelect.value === "" ? null : categorySelect.value
+
+            jokeClient.getRandomJoke(selectedCategory).then((joke) => { 
+                document.querySelector("#jokeImage").setAttribute("src", joke.iconUrl)
+
+                document.querySelector("#jokeValue").innerHTML = joke.value
+                
+                const chipSetContainer = document.querySelector("#jokeCategories .mdc-chip-set__chips")
+                clearChips(chipSetContainer)
+
+                const categoryChipTemplate = chipSetContainer.querySelector("template").content
+
+                joke.categories.forEach(category => {
+                    const categoryChip = categoryChipTemplate.cloneNode(true).firstElementChild
+                    const categoryChipText = categoryChip.querySelector(".mdc-chip__text-label")
+                    categoryChipText.innerHTML = category.charAt(0).toUpperCase() + category.slice(1)
+                    chipSetContainer.appendChild(categoryChip)
+                }) 
+            })
+        }
+
+        function clearChips(chipSetContainer) {
+            chipSetContainer.querySelectorAll("span.mdc-chip")
+                .forEach(child => {
+                    chipSetContainer.removeChild(child)
+                })
+        }
+
+        window.addEventListener('load', () => {
+
+            jokeClient.getJokeCategories().then((categories) => {
+                const optionContainer = document.querySelector(".mdc-select .mdc-select__menu .mdc-list")
+                const categoryOptionTemplate = optionContainer.querySelector('template').content;
+
+                categories.forEach( category => {
+                    const option = categoryOptionTemplate.cloneNode(true).firstElementChild
+                    option.setAttribute("data-value", category)
+
+                    const optionText = option.querySelector(".mdc-list-item__text")
+                    optionText.innerHTML = category.charAt(0).toUpperCase() + category.slice(1)
+                    optionContainer.appendChild(option)
+                })
+                categorySelect.layoutOptions()
+            })
+
+            updateJoke()
+        })
+        
+    </script>
+</html>
