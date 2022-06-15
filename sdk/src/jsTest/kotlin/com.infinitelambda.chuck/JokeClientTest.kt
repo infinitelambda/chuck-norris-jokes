@@ -40,7 +40,7 @@ class JokeClientTest {
 
         val apiClient = FakeApiClient(getRandomJokeResult = Result.success(expectedJoke),
             assertGetRandomJokeParameters = { assertNull(it) })
-        val tested = JokeClientImpl(apiClient)
+        val tested = JokeClient(apiClient)
 
         // when
         val promise = tested.getRandomJoke()
@@ -58,7 +58,7 @@ class JokeClientTest {
             getRandomJokeResult = Result.failure(expectedException),
             assertGetRandomJokeParameters = { assertNull(it) }
         )
-        val tested = JokeClientImpl(apiClient)
+        val tested = JokeClient(apiClient)
 
         // when
         val promise = tested.getRandomJoke()
@@ -84,7 +84,7 @@ class JokeClientTest {
             getRandomJokeResult = Result.success(expectedJoke),
             assertGetRandomJokeParameters = { assertEquals(expectedCategory, it) }
         )
-        val tested = JokeClientImpl(apiClient)
+        val tested = JokeClient(apiClient)
 
         // when
         val promise = tested.getRandomJoke(expectedCategory.name.lowercase())
@@ -104,7 +104,7 @@ class JokeClientTest {
             getRandomJokeResult = Result.failure(expectedException),
             assertGetRandomJokeParameters = { assertEquals(expectedCategory, it) }
         )
-        val tested = JokeClientImpl(apiClient)
+        val tested = JokeClient(apiClient)
 
         // when
         val promise = tested.getRandomJoke(expectedCategory.name.lowercase())
@@ -121,7 +121,7 @@ class JokeClientTest {
         val apiClient = FakeApiClient(
             getJokeCategoriesResult = Result.success(expectedCategories)
         )
-        val tested = JokeClientImpl(apiClient)
+        val tested = JokeClient(apiClient)
 
         // when
         val promise = tested.getJokeCategories()
@@ -138,7 +138,7 @@ class JokeClientTest {
         val apiClient = FakeApiClient(
             getJokeCategoriesResult = Result.failure(expectedException)
         )
-        val tested = JokeClientImpl(apiClient)
+        val tested = JokeClient(apiClient)
 
         // when
         val promise = tested.getJokeCategories()
@@ -168,7 +168,7 @@ class JokeClientTest {
             findJokeResult = Result.success(expectedSearchResult),
             assertFindJokeParameters = { assertEquals(expectedQuery, it) }
         )
-        val tested = JokeClientImpl(apiClient)
+        val tested = JokeClient(apiClient)
 
         // when
         val promise = tested.findJoke(expectedQuery)
@@ -188,7 +188,7 @@ class JokeClientTest {
             findJokeResult = Result.failure(expectedException),
             assertFindJokeParameters = { assertEquals(expectedQuery, it) }
         )
-        val tested = JokeClientImpl(apiClient)
+        val tested = JokeClient(apiClient)
 
         // when
         val promise = tested.findJoke(expectedQuery)

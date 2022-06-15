@@ -35,7 +35,7 @@ open external class JokeClientConfig {
 @JsName("JokeClientImpl")
 class JokeClient internal constructor(private val apiClient: ApiClient) {
 
-    fun getRandomJoke(category: String?): Promise<JokeJs> =
+    fun getRandomJoke(category: String? = null): Promise<JokeJs> =
         jsScope.promise { apiClient.getRandomJoke(category.asJokeCategory()).getOrThrow().toJs() }
 
     fun getJokeCategories(): Promise<Array<String>> =

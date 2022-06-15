@@ -4,6 +4,7 @@ import com.infinitelambda.chuck.data.Joke
 import com.infinitelambda.chuck.data.JokeCategory
 import com.infinitelambda.chuck.data.JokeSearchResult
 import io.ktor.client.*
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 
 internal interface ApiClient {
@@ -40,17 +41,21 @@ internal class ApiClientImpl(private val httpClient: HttpClient) : ApiClient {
         kotlin.runCatching {
             httpClient.get("$BASE_URL/random") {
                 category?.let { parameter("category", it.name.lowercase()) }
-            }
+            }.body()
         }
 
     override suspend fun getJokeCategories(): Result<List<JokeCategory>> =
-        kotlin.runCatching { httpClient.get("$BASE_URL/categories") }
+        kotlin.runCatching {
+            httpClient.get("$BASE_URL/categories")
+                .body()
+        }
+
 
     override suspend fun findJoke(query: String): Result<JokeSearchResult> =
         kotlin.runCatching {
             httpClient.get("$BASE_URL/search") {
                 parameter("query", query)
-            }
+            }.body()
         }
 
     companion object {

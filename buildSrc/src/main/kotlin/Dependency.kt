@@ -7,7 +7,8 @@ object Dependency {
         const val clientIos = "io.ktor:ktor-client-ios:${Version.ktorVersion}"
         const val clientMock = "io.ktor:ktor-client-mock:${Version.ktorVersion}"
 
-        const val clientSerialization = "io.ktor:ktor-client-serialization:${Version.ktorVersion}"
+        const val contentNegotiation = "io.ktor:ktor-client-content-negotiation:${Version.ktorVersion}"
+        const val clientSerialization = "io.ktor:ktor-serialization-kotlinx-json:${Version.ktorVersion}"
 
         const val logging = "io.ktor:ktor-client-logging:${Version.ktorVersion}"
     }

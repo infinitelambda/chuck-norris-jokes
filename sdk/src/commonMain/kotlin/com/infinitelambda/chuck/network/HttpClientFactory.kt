@@ -3,23 +3,29 @@ package com.infinitelambda.chuck.network
 import com.infinitelambda.chuck.util.HttpLogger
 import io.ktor.client.*
 import io.ktor.client.engine.*
-import io.ktor.client.features.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
-import io.ktor.client.features.logging.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.json.Json
 
 internal object HttpClientFactory {
 
-    fun createHttpClient(engine: HttpClientEngine, isLoggingEnabled: Boolean, requestTimeout: Long, connectTimeout: Long) =
+    fun createHttpClient(
+        engine: HttpClientEngine,
+        isLoggingEnabled: Boolean,
+        requestTimeout: Long,
+        connectTimeout: Long
+    ) =
         HttpClient(engine) {
             defaultRequest {
                 header(HttpHeaders.Accept, ContentType.Application.Json)
             }
 
-            install(JsonFeature) {
-                serializer = KotlinxSerializer(kotlinx.serialization.json.Json {
+            install(ContentNegotiation) {
+                json(Json {
                     ignoreUnknownKeys = true
                 })
             }

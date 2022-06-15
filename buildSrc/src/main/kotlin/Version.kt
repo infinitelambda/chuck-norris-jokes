@@ -1,8 +1,8 @@
 object Version {
 
-    const val kotlinVersion = "1.6.10"
+    const val kotlinVersion = "1.6.21"
 
-    const val ktorVersion = "1.6.7"
+    const val ktorVersion = "2.0.2"
 
     const val serializationVersion = "1.3.2"
 

@@ -5,10 +5,10 @@ import com.infinitelambda.chuck.data.JokeCategory
 import com.infinitelambda.chuck.data.JokeSearchResult
 import io.ktor.client.*
 import io.ktor.client.engine.mock.*
-import io.ktor.client.features.json.*
-import io.ktor.client.features.json.serializer.*
+import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
@@ -24,8 +24,8 @@ private fun MockHttpClient(json: Json, handler: suspend MockRequestHandleScope.(
                 requestHandlers.add(handler)
             })
     ) {
-        install(JsonFeature) {
-            serializer = KotlinxSerializer(json)
+        install(ContentNegotiation) {
+            this.json(json)
         }
     }
 

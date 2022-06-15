@@ -1,6 +1,6 @@
 package com.infinitelambda.chuck.util
 
-import io.ktor.client.features.logging.*
+import io.ktor.client.plugins.logging.*
 
 internal actual object HttpLogger : Logger {
 

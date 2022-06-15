@@ -29,6 +29,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(Dependency.Ktor.clientCore)
+                implementation(Dependency.Ktor.contentNegotiation)
                 implementation(Dependency.Ktor.clientSerialization)
                 implementation(Dependency.Ktor.logging)
 
