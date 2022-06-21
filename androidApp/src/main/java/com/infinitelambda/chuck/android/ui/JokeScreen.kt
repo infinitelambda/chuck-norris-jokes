@@ -11,12 +11,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.infinitelambda.chuck.android.R
 import com.infinitelambda.chuck.data.Joke
@@ -24,7 +26,7 @@ import com.infinitelambda.chuck.data.JokeCategory
 
 @Composable
 fun JokeScreen(
-    viewModelFactory: ViewModelFactory,
+    viewModelFactory: ViewModelProvider.Factory,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
     viewModel: JokeViewModel = viewModel(factory = viewModelFactory)
 ) {
@@ -32,7 +34,7 @@ fun JokeScreen(
         viewModel.onViewCreated()
     }
 
-    JokeScreenContent(viewModel = viewModel)
+    JokeScreenLayout(viewModel = viewModel)
 }
 
 @Composable
@@ -52,74 +54,123 @@ private fun OnCreated(lifecycleOwner: LifecycleOwner, action: () -> Unit) {
 }
 
 @Composable
-private fun JokeScreenContent(
-    viewModel: JokeViewModel
-) {
+private fun JokeScreenLayout(viewModel: JokeViewModel) {
     val uiState = viewModel.uiState
 
     val context = LocalContext.current
     val shareSheetTitle = stringResource(id = R.string.joke_share_sheet_title)
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(stringResource(id = R.string.app_name))
-                },
-                backgroundColor = MaterialTheme.colors.surface,
-                elevation = 0.dp
+    JokeScreenScaffold(
+        onRefreshButtonClick = { viewModel.onRefreshJokeClicked() },
+        onShareButtonClick = {
+            context.startActivity(
+                Intent.createChooser(
+                    Intent()
+                        .setAction(Intent.ACTION_SEND)
+                        .setType("text/plain")
+                        .putExtra(Intent.EXTRA_TEXT, uiState.joke?.value ?: ""),
+                    shareSheetTitle
+                )
             )
-        },
+        }) { paddingValues ->
+        JokeScreenContent(
+            padding = paddingValues,
+            uiState = uiState,
+            onCategoryDropdownValueChanged = { viewModel.onJokeCategoryChanged(it) }
+        )
+    }
+}
+
+@Composable
+private fun JokeScreenScaffold(
+    onRefreshButtonClick: () -> Unit,
+    onShareButtonClick: () -> Unit,
+    content: @Composable (PaddingValues) -> Unit
+) {
+    Scaffold(
+        topBar = { JokeScreenTopBar() },
         floatingActionButtonPosition = FabPosition.Center,
         isFloatingActionButtonDocked = true,
         floatingActionButton = {
-            FloatingActionButton(onClick = { viewModel.onRefreshJokeClicked() }) {
-                Icon(
-                    imageVector = Icons.Default.Refresh,
-                    contentDescription = stringResource(id = R.string.joke_refresh_button_content_description)
-                )
-            }
+            JokeScreenRefreshButton(
+                onRefreshButtonClick = onRefreshButtonClick
+            )
         },
         bottomBar = {
-            BottomAppBar {
-                Spacer(modifier = Modifier.weight(1f, true))
-                IconButton(onClick = {
-                    context.startActivity(
-                        Intent.createChooser(
-                            Intent()
-                                .setAction(Intent.ACTION_SEND)
-                                .setType("text/plain")
-                                .putExtra(Intent.EXTRA_TEXT, uiState.joke?.value ?: ""),
-                            shareSheetTitle
-                        )
-                    )
-                }) {
-                    Icon(Icons.Filled.Share, contentDescription = stringResource(id = R.string.joke_share_button_content_description))
-                }
-            }
-        }
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            JokeCategoryDropdownView(
-                modifier = Modifier.fillMaxWidth(),
-                selectedValue = uiState.jokeCategory,
-                values = uiState.jokeCategories,
-                onValueChanged = { viewModel.onJokeCategoryChanged(it) }
+            JokeScreenBottomBar(
+                onShareButtonClick = onShareButtonClick
             )
+        },
+        content = content
+    )
+}
 
-            uiState.joke?.let {
-                Spacer(modifier = Modifier
-                    .fillMaxWidth()
-                    .height(16.dp))
-                JokeCard(joke = it)
-            }
+@Composable
+private fun JokeScreenTopBar() {
+    TopAppBar(
+        title = {
+            Text(stringResource(id = R.string.app_name))
+        },
+        backgroundColor = MaterialTheme.colors.surface,
+        elevation = 0.dp
+    )
+}
+
+@Composable
+private fun JokeScreenRefreshButton(onRefreshButtonClick: () -> Unit) {
+    FloatingActionButton(onClick = onRefreshButtonClick) {
+        Icon(
+            imageVector = Icons.Default.Refresh,
+            contentDescription = stringResource(id = R.string.joke_refresh_button_content_description)
+        )
+    }
+}
+
+@Composable
+private fun JokeScreenBottomBar(onShareButtonClick: () -> Unit) {
+    BottomAppBar {
+        Spacer(modifier = Modifier.weight(1f, true))
+        IconButton(onClick = onShareButtonClick) {
+            Icon(
+                Icons.Filled.Share,
+                contentDescription = stringResource(id = R.string.joke_share_button_content_description)
+            )
         }
+    }
+}
 
+@Composable
+private fun JokeScreenContent(
+    padding: PaddingValues,
+    uiState: JokeUiState,
+    onCategoryDropdownValueChanged: (JokeCategory?) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                start = 16.dp,
+                end = 16.dp,
+                top = 16.dp,
+                bottom = padding.calculateBottomPadding()
+            ),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        JokeCategoryDropdownView(
+            modifier = Modifier.fillMaxWidth(),
+            selectedValue = uiState.jokeCategory,
+            values = uiState.jokeCategories,
+            onValueChanged = onCategoryDropdownValueChanged
+        )
+
+        uiState.joke?.let {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(16.dp)
+            )
+            JokeCard(joke = it)
+        }
     }
 }
 
@@ -203,6 +254,7 @@ private fun JokeCard(
                 .fillMaxWidth()
         ) {
             Text(
+                modifier = Modifier.testTag("jokeValue"),
                 text = joke.value,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.h6

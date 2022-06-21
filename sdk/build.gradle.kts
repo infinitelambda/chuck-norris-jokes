@@ -33,12 +33,7 @@ kotlin {
                 implementation(Dependency.Ktor.clientSerialization)
                 implementation(Dependency.Ktor.logging)
 
-                implementation(Dependency.Kotlinx.coroutinesCore) {
-                    version {
-                        strictly(Version.coroutinesVersion)
-                        because("Using ktor requires native-mt")
-                    }
-                }
+                implementation(Dependency.Kotlinx.coroutinesCore)
 
                 implementation(Dependency.Kotlinx.serialization)
             }

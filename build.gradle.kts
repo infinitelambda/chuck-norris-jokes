@@ -1,3 +1,4 @@
+
 plugins {
     kotlin("multiplatform") version Version.kotlinVersion apply false
     kotlin("native.cocoapods") version Version.kotlinVersion apply false
@@ -12,5 +13,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven(url = "https://jitpack.io")
     }
 }

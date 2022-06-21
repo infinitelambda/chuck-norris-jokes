@@ -11,6 +11,8 @@ android {
         targetSdk = Version.Android.targetSdkVersion
         versionCode = 1
         versionName = "1.0"
+
+        testInstrumentationRunner = "com.infinitelambda.chuck.android.ChuckJUnitRunner"
     }
 
     buildTypes {
@@ -48,6 +50,7 @@ dependencies {
     implementation(Dependency.Androidx.Lifecycle.lifecycleCompose)
     implementation(Dependency.Androidx.activityCompose)
     implementation(Dependency.Kotlin.stdLib)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${Version.coroutinesVersion}")
 
 
     testImplementation(Dependency.Test.junit)
@@ -55,6 +58,8 @@ dependencies {
     androidTestImplementation(Dependency.Androidx.Test.junit)
     androidTestImplementation(Dependency.Androidx.Test.espresso)
     androidTestImplementation(Dependency.Androidx.Compose.uiTest)
+    androidTestImplementation(Dependency.AndroidTest.dexopener)
+    androidTestImplementation(Dependency.AndroidTest.mockk)
 
     debugImplementation(Dependency.Androidx.Compose.uiTooling)
 }

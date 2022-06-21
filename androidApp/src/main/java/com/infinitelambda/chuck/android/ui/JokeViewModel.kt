@@ -29,12 +29,14 @@ class JokeViewModel(
     var uiState by mutableStateOf(JokeUiState(isLoading = true))
         private set
 
-    fun onViewCreated() = viewModelScope.launch {
-        uiState = uiState.copy(
-            isLoading = false,
-            jokeCategories = loadJokeCategories(),
-            joke = loadRandomJoke(null)
-        )
+    fun onViewCreated() {
+        viewModelScope.launch {
+            uiState = uiState.copy(
+                isLoading = false,
+                jokeCategories = loadJokeCategories(),
+                joke = loadRandomJoke(null)
+            )
+        }
     }
 
     private suspend fun loadJokeCategories(): List<JokeCategory> {
@@ -53,19 +55,23 @@ class JokeViewModel(
         return joke.getOrNull()
     }
 
-    fun onJokeCategoryChanged(jokeCategory: JokeCategory?) = viewModelScope.launch {
-        uiState = uiState.copy(
-            jokeCategory = jokeCategory,
-            joke = loadRandomJoke(jokeCategory)
-        )
+    fun onJokeCategoryChanged(jokeCategory: JokeCategory?) {
+        viewModelScope.launch {
+            uiState = uiState.copy(
+                jokeCategory = jokeCategory,
+                joke = loadRandomJoke(jokeCategory)
+            )
+        }
     }
 
-    fun onRefreshJokeClicked() = viewModelScope.launch {
-        uiState = uiState.copy(isLoading = true)
+    fun onRefreshJokeClicked() {
+        viewModelScope.launch {
+            uiState = uiState.copy(isLoading = true)
 
-        uiState = uiState.copy(
-            isLoading = false,
-            joke = loadRandomJoke(uiState.jokeCategory)
-        )
+            uiState = uiState.copy(
+                isLoading = false,
+                joke = loadRandomJoke(uiState.jokeCategory)
+            )
+        }
     }
 }

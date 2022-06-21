@@ -48,6 +48,11 @@ object Dependency {
         }
     }
 
+    object AndroidTest {
+        const val dexopener = "com.github.tmurakami:dexopener:${Version.AndroidTest.dexopenerVersion}"
+        const val mockk = "io.mockk:mockk-android:${Version.AndroidTest.mockkVersion}"
+    }
+
     object Test {
         const val junit = "junit:junit:${Version.Test.junitVersion}"
     }
